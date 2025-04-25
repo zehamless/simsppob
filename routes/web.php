@@ -12,3 +12,4 @@ Route::get('home', fn()=> view('homepage'));
 Route::get('topup', fn()=>view('topup'));
 Route::get('service', fn()=>view('service'));
 Route::get('history', fn()=>view('transaction'));
+Route::get('profile', fn()=>view('profile'));
