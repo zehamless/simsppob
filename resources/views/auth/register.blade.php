@@ -21,29 +21,6 @@
                             >
                         </div>
 
-                        <!-- First Name -->
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <i class="fas fa-user fa-sm text-gray-400"></i>
-                            </div>
-                            <input
-                                type="text"
-                                class="w-full pl-12 pr-3 py-3 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-                                placeholder="nama depan"
-                            >
-                        </div>
-
-                        <!-- Last Name -->
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <i class="fas fa-user fa-sm text-gray-400"></i>
-                            </div>
-                            <input
-                                type="text"
-                                class="w-full pl-12 pr-3 py-3 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-                                placeholder="nama belakang"
-                            >
-                        </div>
 
                         <!-- Password with Alpine.js -->
                         <div class="relative" x-data="{ showPassword: false }">
@@ -61,26 +38,6 @@
                                 @click="showPassword = !showPassword"
                             >
                                 <i :class="showPassword ? 'fas fa-eye-slash fa-sm' : 'fas fa-eye fa-sm'"
-                                   class="text-gray-400"></i>
-                            </button>
-                        </div>
-
-                        <!-- Confirm Password with Alpine.js -->
-                        <div class="relative" x-data="{ showConfirmPassword: false }">
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <i class="fas fa-lock fa-sm text-gray-400"></i>
-                            </div>
-                            <input
-                                :type="showConfirmPassword ? 'text' : 'password'"
-                                class="w-full pl-12 pr-12 py-3 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-                                placeholder="konfirmasi password"
-                            >
-                            <button
-                                type="button"
-                                class="absolute inset-y-0 right-0 flex items-center pr-3"
-                                @click="showConfirmPassword = !showConfirmPassword"
-                            >
-                                <i :class="showConfirmPassword ? 'fas fa-eye-slash fa-sm' : 'fas fa-eye fa-sm'"
                                    class="text-gray-400"></i>
                             </button>
                         </div>
