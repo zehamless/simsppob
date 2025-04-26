@@ -99,8 +99,8 @@ class ApiService
         return $this->makeRequest('post', self::ENDPOINTS['transaction'], $payload, $token);
     }
 
-    public function getTransactionHistory(string $token): array|\Illuminate\Http\Client\Response
+    public function getTransactionHistory(string $token, array $payload): array|\Illuminate\Http\Client\Response
     {
-        return $this->makeRequest('get', self::ENDPOINTS['transaction_history'], [], $token);
+        return $this->makeRequest('get', self::ENDPOINTS['transaction_history'], $payload, $token);
     }
 }

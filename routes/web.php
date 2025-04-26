@@ -21,6 +21,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     Route::post('topup', [\App\Http\Controllers\TopupController::class, 'topup'])->name('topup.post');
     Route::get('service/detail/{servideCode}', [\App\Http\Controllers\PayServiceController::class, 'index'])->name('service');
     Route::post('service', [\App\Http\Controllers\PayServiceController::class, 'payService'])->name('service.post');
-    Route::get('history', fn() => view('transaction'));
+    Route::get('history', [\App\Http\Controllers\TransactionHistoryController::class, 'index'])->name('history');
+    Route::get('history/get', [\App\Http\Controllers\TransactionHistoryController::class, 'getTransactions'])->name('history.get');
     Route::get('profile', fn() => view('profile'));
 });
