@@ -25,7 +25,18 @@
 
     <!-- Page Content -->
     <main>
-        @yield('content')
+        <div class="grid grid-cols-2">
+            <div class="flex flex-col justify-center items-center">
+                @yield('content')
+                <div class="w-full px-4 mt-20">
+                    <x-error-message/>
+                </div>
+            </div>
+            <div class="bg-gray-50">
+                <img src="{{asset('assets/Illustrasi Login.png')}}" class="h-full w-full object-cover"
+                     alt="Login Illustration">
+            </div>
+        </div>
     </main>
 </div>
 

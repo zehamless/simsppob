@@ -227,22 +227,4 @@
             </div>
         </div>
     </section>
-
-    @push('scripts')
-        <script>
-            document.getElementById('toggleBalance').addEventListener('click', function () {
-                // For prototype only - toggle the balance display
-                const balanceElement = this.previousElementSibling;
-                const buttonText = this.querySelector('span');
-
-                if (balanceElement.textContent === 'Rp •••••••') {
-                    balanceElement.textContent = 'Rp 1.735.000';
-                    buttonText.textContent = 'Sembunyikan Saldo';
-                } else {
-                    balanceElement.textContent = 'Rp •••••••';
-                    buttonText.textContent = 'Lihat Saldo';
-                }
-            });
-        </script>
-    @endpush
 @endsection

@@ -31,6 +31,8 @@
                         min="1"
                         id="manualAmount"
                         name="amount"
+                        required
+                        value="{{old('amount')}}"
                         class="w-full py-3 px-4 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 mb-4"
                         placeholder="Masukkan nominal lain (min. Rp10.000)"
                         x-model="amount"

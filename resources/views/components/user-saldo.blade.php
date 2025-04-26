@@ -11,11 +11,21 @@
         </div>
     </div>
 
-    <div class="bg-red-500 text-white rounded-xl p-6 ml-6 flex-1 mt-4 md:mt-0">
+    <div class="bg-red-500 text-white rounded-xl p-6 ml-6 flex-1 mt-4 md:mt-0" x-data="{showSaldo: false}">
         <p class="text-sm mb-1">Saldo anda</p>
-        <h3 class="text-3xl font-bold mb-2">Rp •••••••</h3>
-        <button class="flex items-center text-sm" id="toggleBalance">
-            <span>Lihat Saldo</span>
+        <template x-if="showSaldo">
+            <h3 class="text-3xl font-bold mb-2">Rp 125544</h3>
+        </template>
+        <template x-if="!showSaldo">
+            <h3 class="text-3xl font-bold mb-2">Rp •••••••</h3>
+        </template>
+        <button class="flex items-center text-sm" id="toggleBalance" @click="showSaldo = !showSaldo">
+            <template x-if="showSaldo">
+                <span>Sembunyikan Saldo</span>
+            </template>
+            <template x-if="!showSaldo">
+                <span>Lihat Saldo</span>
+            </template>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                  class="w-4 h-4 ml-1">
