@@ -8,17 +8,26 @@ use Illuminate\Support\Facades\Http;
 class ApiService
 {
     protected $baseUrl;
+    protected bool $verifySsl;
 
     public function __construct()
     {
         $this->baseUrl = config('auth_api.url');
+        $this->verifySsl = !config('app.debug');
     }
 
-    public function registration($payload)
+    private function makeRequest($method, $endpoint, $payload = [], $token = null): ?array
     {
-        $url = $this->baseUrl . '/registration';
+        $url = $this->baseUrl . $endpoint;
+
         try {
-            return Http::post($url, $payload);
+            $request = Http::withOptions(['verify' => $this->verifySsl]);
+
+            if ($token) {
+                $request = $request->withToken($token);
+            }
+
+            return $request->$method($url, $payload);
         } catch (ConnectionException $e) {
             return [
                 'status' => false,
@@ -27,133 +36,58 @@ class ApiService
         }
     }
 
-    public function login($payload)
+    public function registration($payload): ?array
     {
-        $url = $this->baseUrl . '/login';
-        try {
-            return Http::post($url, $payload);
-        } catch (ConnectionException $e) {
-            return [
-                'status' => false,
-                'message' => 'Connection error: ' . $e->getMessage(),
-            ];
-        }
+        return $this->makeRequest('post', '/registration', $payload);
     }
 
-    public function getProfile($payload, $token)
+    public function login($payload): ?array
     {
-        $url = $this->baseUrl . '/profile';
-        try {
-            return Http::withToken($token)->get($url, $payload);
-        } catch (ConnectionException $e) {
-            return [
-                'status' => false,
-                'message' => 'Connection error: ' . $e->getMessage(),
-            ];
-        }
+        return $this->makeRequest('post', '/login', $payload);
     }
 
-    public function updateProfile($payload, $token)
+    public function getProfile($payload, $token): ?array
     {
-        $url = $this->baseUrl . '/profile';
-        try {
-            return Http::withToken($token)->put($url, $payload);
-        } catch (ConnectionException $e) {
-            return [
-                'status' => false,
-                'message' => 'Connection error: ' . $e->getMessage(),
-            ];
-        }
+        return $this->makeRequest('get', '/profile', $payload, $token);
     }
 
-    public function uploadImage($payload, $token)
+    public function updateProfile($payload, $token): ?array
     {
-        $url = $this->baseUrl . '/profile/image';
-        try {
-            return Http::withToken($token)->post($url, $payload);
-        } catch (ConnectionException $e) {
-            return [
-                'status' => false,
-                'message' => 'Connection error: ' . $e->getMessage(),
-            ];
-        }
+        return $this->makeRequest('put', '/profile', $payload, $token);
     }
 
-    public function getBanner()
+    public function uploadImage($payload, $token): ?array
     {
-        $url = $this->baseUrl . '/banner';
-        try {
-            return Http::get($url);
-        } catch (ConnectionException $e) {
-            return [
-                'status' => false,
-                'message' => 'Connection error: ' . $e->getMessage(),
-            ];
-        }
+        return $this->makeRequest('post', '/profile/image', $payload, $token);
     }
 
-    public function getService($token)
+    public function getBanner(): ?array
     {
-        $url = $this->baseUrl . '/services';
-        try {
-            return Http::withToken($token)->get($url);
-        } catch (ConnectionException $e) {
-            return [
-                'status' => false,
-                'message' => 'Connection error: ' . $e->getMessage(),
-            ];
-        }
+        return $this->makeRequest('get', '/banner');
     }
 
-    public function getBalance($token)
+    public function getService($token): ?array
     {
-        $url = $this->baseUrl . '/balance';
-        try {
-            return Http::withToken($token)->get($url);
-        } catch (ConnectionException $e) {
-            return [
-                'status' => false,
-                'message' => 'Connection error: ' . $e->getMessage(),
-            ];
-        }
+        return $this->makeRequest('get', '/services', [], $token);
     }
 
-    public function topup($payload, $token)
+    public function getBalance($token): ?array
     {
-        $url = $this->baseUrl . '/topup';
-        try {
-            return Http::withToken($token)->post($url, $payload);
-        } catch (ConnectionException $e) {
-            return [
-                'status' => false,
-                'message' => 'Connection error: ' . $e->getMessage(),
-            ];
-        }
+        return $this->makeRequest('get', '/balance', [], $token);
     }
 
-    public function transaction($payload, $token)
+    public function topup($payload, $token): ?array
     {
-        $url = $this->baseUrl . '/transaction';
-        try {
-            return Http::withToken($token)->get($url, $payload);
-        } catch (ConnectionException $e) {
-            return [
-                'status' => false,
-                'message' => 'Connection error: ' . $e->getMessage(),
-            ];
-        }
+        return $this->makeRequest('post', '/topup', $payload, $token);
     }
 
-    public function getTransactionHistory($token)
+    public function transaction($payload, $token): ?array
     {
-        $url = $this->baseUrl . '/transaction/history';
-        try {
-            return Http::withToken($token)->get($url);
-        } catch (ConnectionException $e) {
-            return [
-                'status' => false,
-                'message' => 'Connection error: ' . $e->getMessage(),
-            ];
-        }
+        return $this->makeRequest('get', '/transaction', $payload, $token);
+    }
+
+    public function getTransactionHistory($token): ?array
+    {
+        return $this->makeRequest('get', '/transaction/history', [], $token);
     }
 }

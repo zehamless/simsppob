@@ -22,7 +22,7 @@ class AuthController extends Controller
     {
         $res = ApiService::login($request);
         if ($res->status() === 200) {
-            return $this->storeSession($request, $res);
+            return $this->storeSession($request, $res)->with('message', 'Login successful');
         }
 
         return redirect()->back()->withErrors(['email' => 'Invalid credentials']);
@@ -40,7 +40,7 @@ class AuthController extends Controller
     {
         $res = ApiService::registration($request);
         if ($res->status() === 200) {
-            return $this->storeSession($request, $res);
+            return $this->storeSession($request, $res)->with('message', 'Registration successful, please login');
         }
 
         return redirect()->back()->withErrors(['email' => 'Invalid credentials']);
