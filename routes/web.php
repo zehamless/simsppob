@@ -18,7 +18,8 @@ Route::middleware(RedirectIfAuthMiddleware::class)->group(function () {
 Route::middleware(AuthMiddleware::class)->group(function () {
     Route::get('home', \App\Http\Controllers\HomeController::class)->name('home');
     Route::get('topup', fn() => view('topup'));
-    Route::get('service', fn() => view('service'));
+    Route::get('service/detail/{servideCode}', [\App\Http\Controllers\PayServiceController::class, 'index'])->name('service');
+    Route::post('service', [\App\Http\Controllers\PayServiceController::class, 'payService'])->name('service.post');
     Route::get('history', fn() => view('transaction'));
     Route::get('profile', fn() => view('profile'));
 });

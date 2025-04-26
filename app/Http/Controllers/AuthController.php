@@ -20,7 +20,8 @@ class AuthController extends Controller
 
     public function newSession(LoginRequest $request)
     {
-        $res = ApiService::login($request);
+        $validated = $request->validated();
+        $res = ApiService::login($validated);
         if ($res->status() === 200) {
             return $this->storeSession($request, $res)->with('message', 'Login successful');
         }

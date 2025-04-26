@@ -25,11 +25,14 @@ class HomeController extends Controller
             $pool->as('profile')->withOptions($verifyOptions)->withToken($token)->get($baseUrl . $this->apiService::ENDPOINTS['profile']),
         ]);
 
-        $services = $response['services']['data'];
-        $balance = $response['saldo']['data']['balance'];
-        $profile = $response['profile']['data'];
-        $banners = $response['banner']['data'];
-
+        $services = $response['services']['data'] ?? [];
+        $balance = $response['saldo']['data']['balance'] ?? 0;
+        $profile = $response['profile']['data'] ?? [
+            'first_name' => '',
+            'last_name' => '',
+            'profile_image' => '',
+        ];
+        $banners = $response['banner']['data'] ?? [];
         return view('homepage', [
             'services' => $services,
             'saldo' => $balance,

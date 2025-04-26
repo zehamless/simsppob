@@ -8,7 +8,7 @@
     <!-- Services Grid -->
     <div class="grid grid-cols-4 md:grid-cols-6 gap-4 p-4 items-start">
         @foreach($services as $service)
-            <a href="#"
+            <a href="{{ route('service', ['servideCode' => $service['service_code']]) }}"
                class="flex flex-col items-center justify-center p-3">
                 <div class="p-2 rounded-lg hover:shadow">
                     <img src="{{$service['service_icon']}}" alt="">
