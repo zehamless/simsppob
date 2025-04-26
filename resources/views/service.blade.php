@@ -74,8 +74,8 @@
                             @click="showModal = false"
                             class="w-full py-2 text-base text-gray-500 font-medium hover:text-gray-700"
                         >Batalkan
-                            @endif
                         </button>
+                    @endif
                 </div>
             </div>
         </div>

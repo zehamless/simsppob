@@ -14,7 +14,17 @@
         </div>
     </div>
 
-    <div class="bg-red-500 text-white rounded-xl p-6 ml-6 flex-1 mt-4 md:mt-0" x-data="{showSaldo: false}">
+    <div
+        class="bg-red-500 text-white rounded-xl p-6 ml-6 flex-1 mt-4 md:mt-0"
+        x-data="{
+                        showSaldo: false,
+                        init() {
+                            this.showSaldo = localStorage.getItem('showSaldo') === 'true';
+                            this.$watch('showSaldo', value => localStorage.setItem('showSaldo', value));
+                        }
+                    }"
+        x-init="init"
+    >
         <p class="text-sm mb-1">Saldo anda</p>
         <template x-if="showSaldo">
             <h3 class="text-3xl font-bold mb-2">Rp {{ number_format($saldo, 0, ',', '.') }}</h3>
@@ -24,16 +34,16 @@
         </template>
         <button class="flex items-center text-sm cursor-pointer" id="toggleBalance" @click="showSaldo = !showSaldo">
             <template x-if="showSaldo">
-                                        <span>
-                                            Sembunyikan Saldo
-                                            <i class="fas fa-eye-slash ml-1"></i>
-                                        </span>
+                            <span>
+                                Sembunyikan Saldo
+                                <i class="fas fa-eye-slash ml-1"></i>
+                            </span>
             </template>
             <template x-if="!showSaldo">
-                                        <span>
-                                            Lihat Saldo
-                                            <i class="fas fa-eye ml-1"></i>
-                                        </span>
+                            <span>
+                                Lihat Saldo
+                                <i class="fas fa-eye ml-1"></i>
+                            </span>
             </template>
         </button>
     </div>

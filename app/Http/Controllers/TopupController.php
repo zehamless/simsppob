@@ -4,18 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Services\ApiService;
 use Illuminate\Http\Client\Pool;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
-class PayServiceController extends Controller
+class TopupController extends Controller
 {
-
+    private const NOMINALS = [10000, 20000, 50000, 100000, 250000, 500000];
 
     public function __construct(private readonly ApiService $apiService)
     {
     }
 
-    public function index($serviceCode)
+    public function index()
     {
         $token = session('token');
         $verifyOptions = ['verify' => $this->apiService->verifySsl];
@@ -23,7 +22,6 @@ class PayServiceController extends Controller
 
         $response = Http::pool(fn(Pool $pool) => [
             $pool->as('saldo')->withOptions($verifyOptions)->withToken($token)->get($baseUrl . $this->apiService::ENDPOINTS['balance']),
-            $pool->as('services')->withOptions($verifyOptions)->withToken($token)->get($baseUrl . $this->apiService::ENDPOINTS['services']),
             $pool->as('profile')->withOptions($verifyOptions)->withToken($token)->get($baseUrl . $this->apiService::ENDPOINTS['profile']),
         ]);
         $profile = $response['profile']['data'] ?? [
@@ -31,26 +29,23 @@ class PayServiceController extends Controller
             'last_name' => '',
             'profile_image' => '',
         ];
-        $service = collect($response['services']['data'])->firstWhere('service_code', $serviceCode) ?? [
-            'service_code' => 'invalid',
-            'service_name' => 'Invalid Service',
-            'service_icon' => asset('assets/Pulsa.png'),
-            'description' => '',
-            'service_tariff' => null,
-        ];
 
         $saldo = $response['saldo']['data']['balance'];
-        return view('service', ['service' => $service, 'profile' => $profile, 'saldo' => $saldo]);
+        return view('topup', [
+            'profile' => $profile,
+            'saldo' => $saldo,
+            'nominals' => self::NOMINALS,
+        ]);
     }
 
-    public function payService(Request $request)
+    public function topup()
     {
         try {
-            $validated = $request->validate([
-                'service_code' => 'required|string',
+            $validated = request()->validate([
+                'top_up_amount' => 'required|integer|min:10000'
             ]);
             $token = session('token');
-            $response = $this->apiService->transaction($validated, token: $token);
+            $response = $this->apiService->topup($validated, token: $token);
             if ($response->successful()) {
                 return redirect()->back()->with([
                     'isSuccess' => true,
@@ -61,7 +56,7 @@ class PayServiceController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with([
                 'isSuccess' => false,
-                'message' => $response->json('message'),
+                'message' => 'Gagal',
                 'showModal' => true,
             ]);
         }

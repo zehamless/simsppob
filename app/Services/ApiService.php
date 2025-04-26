@@ -59,9 +59,9 @@ class ApiService
         return $this->makeRequest('post', self::ENDPOINTS['login'], $payload);
     }
 
-    public function getProfile(array $payload, string $token): array|\Illuminate\Http\Client\Response
+    public function getProfile(string $token): array|\Illuminate\Http\Client\Response
     {
-        return $this->makeRequest('get', self::ENDPOINTS['profile'], $payload, $token);
+        return $this->makeRequest('get', self::ENDPOINTS['profile'], [], $token);
     }
 
     public function updateProfile(array $payload, string $token): array|\Illuminate\Http\Client\Response

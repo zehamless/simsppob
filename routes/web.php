@@ -17,7 +17,8 @@ Route::middleware(RedirectIfAuthMiddleware::class)->group(function () {
 
 Route::middleware(AuthMiddleware::class)->group(function () {
     Route::get('home', \App\Http\Controllers\HomeController::class)->name('home');
-    Route::get('topup', fn() => view('topup'));
+    Route::get('topup', [\App\Http\Controllers\TopupController::class, 'index'])->name('topup');
+    Route::post('topup', [\App\Http\Controllers\TopupController::class, 'topup'])->name('topup.post');
     Route::get('service/detail/{servideCode}', [\App\Http\Controllers\PayServiceController::class, 'index'])->name('service');
     Route::post('service', [\App\Http\Controllers\PayServiceController::class, 'payService'])->name('service.post');
     Route::get('history', fn() => view('transaction'));
