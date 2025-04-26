@@ -16,7 +16,7 @@ Route::middleware(RedirectIfAuthMiddleware::class)->group(function () {
 });
 
 Route::middleware(AuthMiddleware::class)->group(function () {
-    Route::get('home', fn() => view('homepage'))->name('home');
+    Route::get('home', \App\Http\Controllers\HomeController::class)->name('home');
     Route::get('topup', fn() => view('topup'));
     Route::get('service', fn() => view('service'));
     Route::get('history', fn() => view('transaction'));
