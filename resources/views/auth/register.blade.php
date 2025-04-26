@@ -2,7 +2,7 @@
 @section('content')
     <div class="w-full max-w-lg justify-center">
         <x-app_logo/>
-        <div class="m-8 justify-center items-center">
+        <div class="m-8 px-20 justify-center items-center">
             <h2 class="text-2xl font-bold text-center">Lengkapi data untuk membuat akun</h2>
         </div>
         <div>

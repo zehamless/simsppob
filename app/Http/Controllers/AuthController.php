@@ -38,7 +38,8 @@ class AuthController extends Controller
 
     public function registerUser(RegisterRequest $request)
     {
-        $res = ApiService::registration($request);
+        $validated = $request->validated();
+        $res = ApiService::registration($validated);
         if ($res->status() === 200) {
             return $this->storeSession($request, $res)->with('message', 'Registration successful, please login');
         }

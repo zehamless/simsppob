@@ -16,7 +16,7 @@ class ApiService
         $this->verifySsl = !config('app.debug');
     }
 
-    private function makeRequest($method, $endpoint, $payload = [], $token = null): ?array
+    private function makeRequest(string $method, string $endpoint, array $payload = [], string $token = null): array|\Illuminate\Http\Client\Response
     {
         $url = $this->baseUrl . $endpoint;
 
@@ -36,57 +36,57 @@ class ApiService
         }
     }
 
-    public function registration($payload): ?array
+    public function registration(array $payload): array|\Illuminate\Http\Client\Response
     {
         return $this->makeRequest('post', '/registration', $payload);
     }
 
-    public function login($payload): ?array
+    public function login(array $payload): array|\Illuminate\Http\Client\Response
     {
         return $this->makeRequest('post', '/login', $payload);
     }
 
-    public function getProfile($payload, $token): ?array
+    public function getProfile(array $payload, string $token): array|\Illuminate\Http\Client\Response
     {
         return $this->makeRequest('get', '/profile', $payload, $token);
     }
 
-    public function updateProfile($payload, $token): ?array
+    public function updateProfile(array $payload, string $token): array|\Illuminate\Http\Client\Response
     {
         return $this->makeRequest('put', '/profile', $payload, $token);
     }
 
-    public function uploadImage($payload, $token): ?array
+    public function uploadImage(array $payload, string $token): array|\Illuminate\Http\Client\Response
     {
         return $this->makeRequest('post', '/profile/image', $payload, $token);
     }
 
-    public function getBanner(): ?array
+    public function getBanner(): array|\Illuminate\Http\Client\Response
     {
         return $this->makeRequest('get', '/banner');
     }
 
-    public function getService($token): ?array
+    public function getService(string $token): array|\Illuminate\Http\Client\Response
     {
         return $this->makeRequest('get', '/services', [], $token);
     }
 
-    public function getBalance($token): ?array
+    public function getBalance(string $token): array|\Illuminate\Http\Client\Response
     {
         return $this->makeRequest('get', '/balance', [], $token);
     }
 
-    public function topup($payload, $token): ?array
+    public function topup(array $payload, string $token): array|\Illuminate\Http\Client\Response
     {
         return $this->makeRequest('post', '/topup', $payload, $token);
     }
 
-    public function transaction($payload, $token): ?array
+    public function transaction(array $payload, string $token): array|\Illuminate\Http\Client\Response
     {
         return $this->makeRequest('get', '/transaction', $payload, $token);
     }
 
-    public function getTransactionHistory($token): ?array
+    public function getTransactionHistory(string $token): array|\Illuminate\Http\Client\Response
     {
         return $this->makeRequest('get', '/transaction/history', [], $token);
     }
