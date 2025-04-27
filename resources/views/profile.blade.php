@@ -16,9 +16,6 @@
                     <input x-ref="hiddenFileInput" type="file" name="image" class="hidden">
                 </form>
             </div>
-            @error('image')
-            {{ $message }}
-            @enderror
             <label class="absolute bottom-0 right-0 rounded-full bg-white p-2 shadow-md cursor-pointer">
                 <input type="file" class="hidden" @change="preview">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24"
@@ -31,12 +28,6 @@
         <h1 class="text-2xl font-bold text-gray-800">{{$profile['first_name']. ' '. $profile['last_name']}}</h1>
     </div>
     <div>
-        @foreach( $errors->all() as $error)
-            <div class="text-red-500 text-sm mb-2">
-                {{ $error }}
-            </div>
-
-        @endforeach
         <form x-ref="profileForm" class="space-y-5 w-full"
               x-data="{ editing: {{ session('isEditing', false) ? 'true' : 'false' }} }"
               action="{{route('profile.post')}}" method="POST">
