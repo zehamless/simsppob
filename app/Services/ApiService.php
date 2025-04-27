@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Pool;
+use Illuminate\Http\Client\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
 
@@ -62,7 +63,7 @@ class ApiService
         return !in_array($endpoint, self::PUBLIC_ENDPOINTS);
     }
 
-    private function makeRequest(string $method, string $endpoint, array|UploadedFile $payload = [], ?string $token = null)
+    private function makeRequest(string $method, string $endpoint, array|UploadedFile $payload = [], ?string $token = null): ?array
     {
         $url = $this->baseUrl . $endpoint;
 
@@ -74,11 +75,23 @@ class ApiService
             }
 
             if ($payload instanceof UploadedFile) {
-                return $request->attach('file', file_get_contents($payload->getRealPath()), $payload->getClientOriginalName())
+                $response = $request->attach('file', file_get_contents($payload->getRealPath()), $payload->getClientOriginalName())
                     ->{$method}($url);
+            } else {
+                $response = $request->$method($url, $payload);
             }
 
-            return $request->$method($url, $payload);
+            if ($response->unauthorized()) {
+                session()?->invalidate();
+                session()?->regenerate();
+                return ['status' => false, 'message' => 'Unauthorized'];
+            }
+
+            return [
+                'status' => true,
+                'data' => $response->json('data'),
+                'message' => $response->json('message'),
+            ];
         } catch (ConnectionException $e) {
             return ['status' => false, 'message' => 'Connection error: ' . $e->getMessage()];
         }
@@ -86,7 +99,7 @@ class ApiService
 
     public function makePooledRequests(array $endpoints, ?string $token = null, array $payloads = []): array
     {
-        return Http::pool(function (Pool $pool) use ($endpoints, $token, $payloads) {
+        $responses = Http::pool(function (Pool $pool) use ($endpoints, $token, $payloads) {
             foreach ($endpoints as $alias => $endpoint) {
                 $alias = is_numeric($alias) ? basename($endpoint) : $alias;
                 $endpointPath = self::ENDPOINTS[$endpoint] ?? $endpoint;
@@ -103,6 +116,15 @@ class ApiService
                 $request->$method($url, $payload);
             }
         });
+        foreach ($responses as $response) {
+            if ($response->unauthorized()) {
+                session()?->invalidate();
+                session()?->regenerate();
+            }
+        }
+
+        return $responses;
+
     }
 
     public function registration(array $payload)

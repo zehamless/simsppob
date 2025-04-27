@@ -50,7 +50,7 @@ class PayServiceController extends Controller
             ]);
             $token = session('token');
             $response = $this->apiService->transaction($validated, token: $token);
-            if ($response->successful()) {
+            if ($response['status']) {
                 return redirect()->back()->with([
                     'isSuccess' => true,
                     'message' => 'Berhasil',
@@ -60,7 +60,7 @@ class PayServiceController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with([
                 'isSuccess' => false,
-                'message' => $response->json('message'),
+                'message' => $response['message'] ?? 'Gagal',
                 'showModal' => true,
             ]);
         }

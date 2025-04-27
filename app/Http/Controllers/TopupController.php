@@ -45,7 +45,7 @@ class TopupController extends Controller
             ]);
             $token = session('token');
             $response = $this->apiService->topup($validated, token: $token);
-            if ($response->successful()) {
+            if ($response['status']) {
                 return redirect()->back()->with([
                     'isSuccess' => true,
                     'message' => 'Berhasil',

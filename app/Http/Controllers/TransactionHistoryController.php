@@ -54,9 +54,9 @@ class TransactionHistoryController extends Controller
 
         $token = session('token');
         $response = $this->apiService->getTransactionHistory(token: $token, payload: $validated);
-        if ($response->successful()) {
+        if ($response['status']) {
             return response()->json($response['data']['records'] ?? []);
         }
-        return response()->json([]);
+        return response()->json();
     }
 }

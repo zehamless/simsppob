@@ -22,7 +22,6 @@ class HomeController extends Controller
             'profile' => 'profile',
         ];
         $response = $this->apiService->makePooledRequests(endpoints: $endpoints, token: $token);
-
         $services = $response['services']['data'] ?? [];
         $balance = $response['balance']['data']['balance'] ?? 0;
         $profile = $response['profile']['data'] ?? [

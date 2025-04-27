@@ -22,8 +22,9 @@ class AuthController extends Controller
     {
         $validated = $request->validated();
         $res = ApiService::login($validated);
-        if ($res->status() === 200) {
-            return $this->storeSession($request, $res)->with('message', 'Login successful');
+
+        if ($res['status']) {
+            return $this->storeSession($request, $res['data']['token'])->with('message', 'Login successful');
         }
 
         return redirect()->back()->withErrors(['email' => 'Invalid credentials']);
@@ -41,17 +42,17 @@ class AuthController extends Controller
     {
         $validated = $request->validated();
         $res = ApiService::registration($validated);
-        if ($res->status() === 200) {
+        if ($res['status']) {
             return $this->storeSession($request, $res)->with('message', 'Registration successful, please login');
         }
 
         return redirect()->back()->withErrors(['email' => 'Invalid credentials']);
     }
 
-    public function storeSession(LoginRequest|RegisterRequest $request, \GuzzleHttp\Promise\PromiseInterface|array|\Illuminate\Http\Client\Response $res): \Illuminate\Http\RedirectResponse
+    public function storeSession(LoginRequest|RegisterRequest $request, string $token): \Illuminate\Http\RedirectResponse
     {
         $request->session()->regenerate();
-        $request->session()->put('token', $res->json('data.token'));
+        $request->session()->put('token', $token);
         return redirect()->intended(default: route('home'));
     }
 }

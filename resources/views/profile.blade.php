@@ -53,7 +53,7 @@
                         type="email"
                         name="email"
                         value="{{old('email', $profile['email'])}}"
-                        :disabled="!editing"
+                        disabled
                         class="w-full pl-12 pr-3 py-3 text-base border @error('email') border-red-500 @else border-gray-300 @enderror rounded-md focus:outline-none"
                         placeholder="masukan email anda"
                     >
@@ -108,12 +108,15 @@
                     >
                         Edit Profile
                     </button>
-                    <button
-                        type="button"
-                        class="w-full py-3 text-base bg-white text-red-500 font-semibold rounded-md mt-5 border hover:bg-gray-100"
-                    >
-                        logout
-                    </button>
+         <form method="POST" action="{{ route('logout') }}">
+             @csrf
+             <button
+                 type="submit"
+                 class="w-full py-3 text-base bg-white text-red-500 font-semibold rounded-md mt-5 border hover:bg-gray-100"
+             >
+                 Logout
+             </button>
+         </form>
                 </div>
             </template>
             <template x-if="editing">
