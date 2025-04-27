@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
 
 class ApiService
@@ -12,6 +13,7 @@ class ApiService
         'login' => '/login',
         'profile' => '/profile',
         'profile_image' => '/profile/image',
+        'profile_update' => '/profile/update',
         'banner' => '/banner',
         'services' => '/services',
         'balance' => '/balance',
@@ -29,7 +31,7 @@ class ApiService
         $this->verifySsl = !config('app.debug');
     }
 
-    private function makeRequest(string $method, string $endpoint, array $payload = [], string $token = null): array|\Illuminate\Http\Client\Response
+    private function makeRequest(string $method, string $endpoint, array|UploadedFile $payload = [], string $token = null): array|\Illuminate\Http\Client\Response
     {
         $url = $this->baseUrl . $endpoint;
 
@@ -39,7 +41,11 @@ class ApiService
             if ($token) {
                 $request = $request->withToken($token);
             }
-
+            if ($payload instanceof UploadedFile) {
+                return $request
+                    ->attach('file', file_get_contents($payload->getRealPath()), $payload->getClientOriginalName())
+                    ->{$method}($url);
+            }
             return $request->$method($url, $payload);
         } catch (ConnectionException $e) {
             return [
@@ -66,12 +72,12 @@ class ApiService
 
     public function updateProfile(array $payload, string $token): array|\Illuminate\Http\Client\Response
     {
-        return $this->makeRequest('put', self::ENDPOINTS['profile'], $payload, $token);
+        return $this->makeRequest('put', self::ENDPOINTS['profile_update'], $payload, $token);
     }
 
-    public function uploadImage(array $payload, string $token): array|\Illuminate\Http\Client\Response
+    public function uploadImage(UploadedFile $payload, string $token): array|\Illuminate\Http\Client\Response
     {
-        return $this->makeRequest('post', self::ENDPOINTS['profile_image'], $payload, $token);
+        return $this->makeRequest('put', self::ENDPOINTS['profile_image'], $payload, $token);
     }
 
     public function getBanner(): array|\Illuminate\Http\Client\Response

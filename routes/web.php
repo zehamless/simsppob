@@ -23,5 +23,8 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     Route::post('service', [\App\Http\Controllers\PayServiceController::class, 'payService'])->name('service.post');
     Route::get('history', [\App\Http\Controllers\TransactionHistoryController::class, 'index'])->name('history');
     Route::get('history/get', [\App\Http\Controllers\TransactionHistoryController::class, 'getTransactions'])->name('history.get');
-    Route::get('profile', fn() => view('profile'));
+    Route::get('profile',[\App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
+    Route::post('profile',[\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.post');
+    Route::post('logout', [AuthController::class, 'destroySession'])->name('logout');
+    Route::post('profile/image',[\App\Http\Controllers\ProfileController::class, 'updateImage'])->name('profile.image');
 });
