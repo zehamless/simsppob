@@ -107,7 +107,7 @@
                 </button>
                 <p class="text-center mt-4 text-lg">
                     Sudah punya akun?
-                    <a href="{{ route('login') }}" class="text-red-500 hover:underline">Daftar di sini</a>
+                    <a href="{{ route('login') }}" class="text-red-500 hover:underline">Masuk di sini</a>
                 </p>
             </form>
         </div>

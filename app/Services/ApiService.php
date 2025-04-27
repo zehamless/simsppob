@@ -49,7 +49,7 @@ class ApiService
     public function __construct()
     {
         $this->baseUrl = config('auth_api.url');
-        $this->verifySsl = !config('app.debug');
+        $this->verifySsl = config('auth_api.withSSL');
     }
 
     /**

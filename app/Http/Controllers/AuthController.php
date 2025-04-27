@@ -44,7 +44,7 @@ class AuthController extends Controller
         $validated = $request->validated();
         $res = ApiService::registration($validated);
         if ($res['status']) {
-            return $this->storeSession($request, $res)->with('message', 'Registration successful, please login');
+            return redirect()->route('login')->with('message', $res['message']);
         }
 
         return redirect()->back()->withErrors(['email' => 'Invalid credentials']);
