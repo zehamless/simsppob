@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Http;
 
 class ApiService
 {
-    public const ENDPOINTS = [
+    private const ENDPOINTS = [
         'registration' => '/registration',
         'login' => '/login',
         'profile' => '/profile',
@@ -23,7 +23,7 @@ class ApiService
         'transaction_history' => '/transaction/history',
     ];
 
-    private const ENDPOINT_METHODS = [
+    private const METHODS = [
         '/registration' => 'post',
         '/login' => 'post',
         '/profile' => 'get',
@@ -54,7 +54,7 @@ class ApiService
 
     private function getMethod(string $endpoint): string
     {
-        return self::ENDPOINT_METHODS[$endpoint] ?? 'get';
+        return self::METHODS[$endpoint] ?? 'get';
     }
 
     private function isAuthRequired(string $endpoint): bool
@@ -87,39 +87,21 @@ class ApiService
     public function makePooledRequests(array $endpoints, ?string $token = null, array $payloads = []): array
     {
         return Http::pool(function (Pool $pool) use ($endpoints, $token, $payloads) {
-            $pooledRequests = [];
-
             foreach ($endpoints as $alias => $endpoint) {
                 $alias = is_numeric($alias) ? basename($endpoint) : $alias;
-
                 $endpointPath = self::ENDPOINTS[$endpoint] ?? $endpoint;
-
                 $method = $this->getMethod($endpointPath);
-
                 $requiresAuth = $this->isAuthRequired($endpointPath);
-
                 $payload = $payloads[$alias] ?? [];
+                $url = $this->baseUrl . $endpointPath;
 
                 $request = $pool->as($alias)->withOptions(['verify' => $this->verifySsl]);
-
                 if ($requiresAuth && $token) {
                     $request = $request->withToken($token);
                 }
 
-                $url = $this->baseUrl . $endpointPath;
-
-                if ($method === 'get') {
-                    $pooledRequests[] = $request->get($url, $payload);
-                } else if ($method === 'post') {
-                    $pooledRequests[] = $request->post($url, $payload);
-                } else if ($method === 'put') {
-                    $pooledRequests[] = $request->put($url, $payload);
-                } else if ($method === 'delete') {
-                    $pooledRequests[] = $request->delete($url, $payload);
-                }
+                $request->$method($url, $payload);
             }
-
-            return $pooledRequests;
         });
     }
 

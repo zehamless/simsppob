@@ -18,14 +18,13 @@ class PayServiceController extends Controller
     public function index($serviceCode)
     {
         $token = session('token');
-        $verifyOptions = ['verify' => $this->apiService->verifySsl];
-        $baseUrl = $this->apiService->baseUrl;
 
-        $response = Http::pool(fn(Pool $pool) => [
-            $pool->as('saldo')->withOptions($verifyOptions)->withToken($token)->get($baseUrl . $this->apiService::ENDPOINTS['balance']),
-            $pool->as('services')->withOptions($verifyOptions)->withToken($token)->get($baseUrl . $this->apiService::ENDPOINTS['services']),
-            $pool->as('profile')->withOptions($verifyOptions)->withToken($token)->get($baseUrl . $this->apiService::ENDPOINTS['profile']),
-        ]);
+        $endpoints = [
+            'balance' => 'balance',
+            'profile' => 'profile',
+            'services' => 'services',
+        ];
+        $response = $this->apiService->makePooledRequests($endpoints, $token);
         $profile = $response['profile']['data'] ?? [
             'first_name' => '',
             'last_name' => '',
@@ -39,7 +38,7 @@ class PayServiceController extends Controller
             'service_tariff' => null,
         ];
 
-        $saldo = $response['saldo']['data']['balance'];
+        $saldo = $response['balance']['data']['balance'];
         return view('service', ['service' => $service, 'profile' => $profile, 'saldo' => $saldo]);
     }
 
