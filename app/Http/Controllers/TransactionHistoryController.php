@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Services\ApiService;
-use Illuminate\Http\Client\Pool;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 
 class TransactionHistoryController extends Controller
 {
@@ -45,7 +44,11 @@ class TransactionHistoryController extends Controller
         ]);
     }
 
-    public function getTransactions(Request $request)
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getTransactions(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'offset' => 'required|integer',

@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Services\ApiService;
-use Illuminate\Http\Client\Pool;
-use Illuminate\Support\Facades\Http;
 
 class HomeController extends Controller
 {

@@ -4,7 +4,6 @@ namespace App\Services;
 
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Pool;
-use Illuminate\Http\Client\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
 
@@ -53,16 +52,31 @@ class ApiService
         $this->verifySsl = !config('app.debug');
     }
 
+    /**
+     * @param string $endpoint
+     * @return string
+     */
     private function getMethod(string $endpoint): string
     {
         return self::METHODS[$endpoint] ?? 'get';
     }
 
+    /**
+     * @param string $endpoint
+     * @return bool
+     */
     private function isAuthRequired(string $endpoint): bool
     {
         return !in_array($endpoint, self::PUBLIC_ENDPOINTS);
     }
 
+    /**
+     * @param string $method
+     * @param string $endpoint
+     * @param array|UploadedFile $payload
+     * @param string|null $token
+     * @return array|null
+     */
     private function makeRequest(string $method, string $endpoint, array|UploadedFile $payload = [], ?string $token = null): ?array
     {
         $url = $this->baseUrl . $endpoint;
@@ -97,6 +111,12 @@ class ApiService
         }
     }
 
+    /**
+     * @param array $endpoints
+     * @param string|null $token
+     * @param array $payloads
+     * @return array
+     */
     public function makePooledRequests(array $endpoints, ?string $token = null, array $payloads = []): array
     {
         $responses = Http::pool(function (Pool $pool) use ($endpoints, $token, $payloads) {
@@ -127,57 +147,79 @@ class ApiService
 
     }
 
-    public function registration(array $payload)
+    /**
+     * @param array $payload
+     * @return array|null
+     */
+    public function registration(array $payload): ?array
     {
         return $this->makeRequest('post', self::ENDPOINTS['registration'], $payload);
     }
 
-    public function login(array $payload)
+    /**
+     * @param array $payload
+     * @return array|null
+     */
+    public function login(array $payload): ?array
     {
         return $this->makeRequest('post', self::ENDPOINTS['login'], $payload);
     }
 
-    public function getProfile(string $token)
+    /**
+     * @param string $token
+     * @return array|null
+     */
+    public function getProfile(string $token): ?array
     {
         return $this->makeRequest('get', self::ENDPOINTS['profile'], [], $token);
     }
 
-    public function updateProfile(array $payload, string $token)
+    /**
+     * @param array $payload
+     * @param string $token
+     * @return array|null
+     */
+    public function updateProfile(array $payload, string $token): ?array
     {
         return $this->makeRequest('put', self::ENDPOINTS['profile_update'], $payload, $token);
     }
 
-    public function uploadImage(UploadedFile $payload, string $token)
+    /**
+     * @param UploadedFile $payload
+     * @param string $token
+     * @return array|null
+     */
+    public function uploadImage(UploadedFile $payload, string $token): ?array
     {
         return $this->makeRequest('put', self::ENDPOINTS['profile_image'], $payload, $token);
     }
 
-    public function getBanner()
-    {
-        return $this->makeRequest('get', self::ENDPOINTS['banner']);
-    }
-
-    public function getService(string $token)
-    {
-        return $this->makeRequest('get', self::ENDPOINTS['services'], [], $token);
-    }
-
-    public function getBalance(string $token)
-    {
-        return $this->makeRequest('get', self::ENDPOINTS['balance'], [], $token);
-    }
-
-    public function topup(array $payload, string $token)
+    /**
+     * @param array $payload
+     * @param string $token
+     * @return array|null
+     */
+    public function topup(array $payload, string $token): ?array
     {
         return $this->makeRequest('post', self::ENDPOINTS['topup'], $payload, $token);
     }
 
-    public function transaction(array $payload, string $token)
+    /**
+     * @param array $payload
+     * @param string $token
+     * @return array|null
+     */
+    public function transaction(array $payload, string $token): ?array
     {
         return $this->makeRequest('post', self::ENDPOINTS['transaction'], $payload, $token);
     }
 
-    public function getTransactionHistory(string $token, array $payload)
+    /**
+     * @param string $token
+     * @param array $payload
+     * @return array|null
+     */
+    public function getTransactionHistory(string $token, array $payload): ?array
     {
         return $this->makeRequest('get', self::ENDPOINTS['transaction_history'], $payload, $token);
     }

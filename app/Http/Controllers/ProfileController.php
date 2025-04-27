@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Facades\ApiService;
 use App\Http\Requests\ProfileRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class ProfileController extends Controller
@@ -17,7 +18,7 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function update(ProfileRequest $request)
+    public function update(ProfileRequest $request): RedirectResponse
     {
         $validated = $request->validated();
         $token = session('token');
@@ -30,7 +31,7 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function updateImage(Request $request)
+    public function updateImage(Request $request): RedirectResponse
     {
         $request->validate([
             'image' => 'required|image|mimes:jpeg,jpg,png|max:100',

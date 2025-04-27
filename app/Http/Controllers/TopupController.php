@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Services\ApiService;
-use Illuminate\Http\Client\Pool;
-use Illuminate\Support\Facades\Http;
+use Exception;
+use Illuminate\Http\RedirectResponse;
 
 class TopupController extends Controller
 {
@@ -37,7 +37,7 @@ class TopupController extends Controller
         ]);
     }
 
-    public function topup()
+    public function topup(): ?RedirectResponse
     {
         try {
             $validated = request()->validate([
@@ -52,7 +52,12 @@ class TopupController extends Controller
                     'showModal' => true,
                 ]);
             }
-        } catch (\Exception $e) {
+            return redirect()->back()->with([
+                'isSuccess' => false,
+                'message' => 'Gagal',
+                'showModal' => true,
+            ]);
+        } catch (Exception) {
             return redirect()->back()->with([
                 'isSuccess' => false,
                 'message' => 'Gagal',

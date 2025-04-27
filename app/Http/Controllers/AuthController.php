@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Facades\ApiService;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use Illuminate\Http\RedirectResponse;
 
 class AuthController extends Controller
 {
@@ -49,7 +50,7 @@ class AuthController extends Controller
         return redirect()->back()->withErrors(['email' => 'Invalid credentials']);
     }
 
-    public function storeSession(LoginRequest|RegisterRequest $request, string $token): \Illuminate\Http\RedirectResponse
+    public function storeSession(LoginRequest|RegisterRequest $request, string $token): RedirectResponse
     {
         $request->session()->regenerate();
         $request->session()->put('token', $token);

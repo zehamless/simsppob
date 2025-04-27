@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Services\ApiService;
-use Illuminate\Http\Client\Pool;
+use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 
 class PayServiceController extends Controller
 {
@@ -42,7 +42,7 @@ class PayServiceController extends Controller
         return view('service', ['service' => $service, 'profile' => $profile, 'saldo' => $saldo]);
     }
 
-    public function payService(Request $request)
+    public function payService(Request $request): ?RedirectResponse
     {
         try {
             $validated = $request->validate([
@@ -57,7 +57,12 @@ class PayServiceController extends Controller
                     'showModal' => true,
                 ]);
             }
-        } catch (\Exception $e) {
+            return redirect()->back()->with([
+                'isSuccess' => false,
+                'message' => $response['message'] ?? 'Gagal',
+                'showModal' => true,
+            ]);
+        } catch (Exception) {
             return redirect()->back()->with([
                 'isSuccess' => false,
                 'message' => $response['message'] ?? 'Gagal',
