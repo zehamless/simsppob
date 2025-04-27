@@ -17,20 +17,19 @@ class TopupController extends Controller
     public function index()
     {
         $token = session('token');
-        $verifyOptions = ['verify' => $this->apiService->verifySsl];
-        $baseUrl = $this->apiService->baseUrl;
 
-        $response = Http::pool(fn(Pool $pool) => [
-            $pool->as('saldo')->withOptions($verifyOptions)->withToken($token)->get($baseUrl . $this->apiService::ENDPOINTS['balance']),
-            $pool->as('profile')->withOptions($verifyOptions)->withToken($token)->get($baseUrl . $this->apiService::ENDPOINTS['profile']),
-        ]);
+        $endpoints = [
+            'balance' => 'balance',
+            'profile' => 'profile',
+        ];
+        $response = $this->apiService->makePooledRequests($endpoints, $token);
         $profile = $response['profile']['data'] ?? [
             'first_name' => '',
             'last_name' => '',
             'profile_image' => '',
         ];
 
-        $saldo = $response['saldo']['data']['balance'];
+        $saldo = $response['balance']['data']['balance'];
         return view('topup', [
             'profile' => $profile,
             'saldo' => $saldo,

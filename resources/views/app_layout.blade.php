@@ -17,16 +17,23 @@
         <div class="max-w-screen-md mx-auto">
             <!-- Header -->
             <header class="flex justify-between items-center p-4">
-                <div class="flex items-center">
-                    <div class="h-8 w-8 bg-red-500 rounded-full flex items-center justify-center text-white font-bold">
-                        <span>S</span>
-                    </div>
+                <a href="{{route('home')}}" class="flex items-center">
+                    <img src="{{asset('assets/Logo.png')}}" alt="" srcset="">
                     <span class="ml-2 font-semibold">SIMS PPOB</span>
-                </div>
+                </a>
                 <nav class="flex gap-6">
-                    <a href="#" class="text-sm">Top Up</a>
-                    <a href="#" class="text-sm">Transaction</a>
-                    <a href="#" class="text-sm">Akun</a>
+                    <a href="{{ route('topup') }}"
+                       class="text-sm {{ request()->routeIs('topup') ? 'font-bold text-red-500 underline' : '' }}">
+                        Top Up
+                    </a>
+                    <a href="{{ route('history') }}"
+                       class="text-sm {{ request()->routeIs('history') ? 'font-bold text-red-500 underline' : '' }}">
+                        Transaction
+                    </a>
+                    <a href="{{ route('profile') }}"
+                       class="text-sm {{ request()->routeIs('profile') ? 'font-bold text-red-500 underline' : '' }}">
+                        Akun
+                    </a>
                 </nav>
             </header>
         </div>

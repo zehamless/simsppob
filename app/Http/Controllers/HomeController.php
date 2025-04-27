@@ -15,18 +15,16 @@ class HomeController extends Controller
     public function __invoke()
     {
         $token = session('token');
-        $verifyOptions = ['verify' => $this->apiService->verifySsl];
-        $baseUrl = $this->apiService->baseUrl;
-
-        $response = Http::pool(fn(Pool $pool) => [
-            $pool->as('saldo')->withOptions($verifyOptions)->withToken($token)->get($baseUrl . $this->apiService::ENDPOINTS['balance']),
-            $pool->as('services')->withOptions($verifyOptions)->withToken($token)->get($baseUrl . $this->apiService::ENDPOINTS['services']),
-            $pool->as('banner')->withOptions($verifyOptions)->get($baseUrl . $this->apiService::ENDPOINTS['banner']),
-            $pool->as('profile')->withOptions($verifyOptions)->withToken($token)->get($baseUrl . $this->apiService::ENDPOINTS['profile']),
-        ]);
+        $endpoints = [
+            'balance' => 'balance',
+            'services' => 'services',
+            'banner' => 'banner',
+            'profile' => 'profile',
+        ];
+        $response = $this->apiService->makePooledRequests(endpoints: $endpoints, token: $token);
 
         $services = $response['services']['data'] ?? [];
-        $balance = $response['saldo']['data']['balance'] ?? 0;
+        $balance = $response['balance']['data']['balance'] ?? 0;
         $profile = $response['profile']['data'] ?? [
             'first_name' => '',
             'last_name' => '',

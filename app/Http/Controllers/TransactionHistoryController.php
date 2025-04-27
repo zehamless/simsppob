@@ -18,24 +18,25 @@ class TransactionHistoryController extends Controller
     {
 
         $token = session('token');
-        $verifyOptions = ['verify' => $this->apiService->verifySsl];
-        $baseUrl = $this->apiService->baseUrl;
-
-        $response = Http::pool(fn(Pool $pool) => [
-            $pool->as('saldo')->withOptions($verifyOptions)->withToken($token)->get($baseUrl . $this->apiService::ENDPOINTS['balance']),
-            $pool->as('profile')->withOptions($verifyOptions)->withToken($token)->get($baseUrl . $this->apiService::ENDPOINTS['profile']),
-            $pool->as('transaction')->withOptions($verifyOptions)->withToken($token)->get($baseUrl . $this->apiService::ENDPOINTS['transaction_history'], [
+        $endpoints = [
+            'balance' => 'balance',
+            'profile' => 'profile',
+            'transaction' => 'transaction_history',
+        ];
+        $payloads = [
+            'transaction' => [
                 'offset' => 0,
                 'limit' => 10,
-            ]),
-        ]);
+            ],
+        ];
+        $response = $this->apiService->makePooledRequests($endpoints, $token, $payloads);
         $profile = $response['profile']['data'] ?? [
             'first_name' => '',
             'last_name' => '',
             'profile_image' => '',
         ];
 
-        $saldo = $response['saldo']['data']['balance'];
+        $saldo = $response['balance']['data']['balance'];
         $transactions = $response['transaction']['data']['records'] ?? [];
         return view('transaction', [
             'profile' => $profile,
