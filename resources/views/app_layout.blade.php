@@ -19,7 +19,7 @@
             <header class="flex justify-between items-center p-4">
                 <a href="{{route('home')}}" class="flex items-center">
                     <img src="{{asset('assets/Logo.png')}}" alt="" srcset="">
-                    <span class="ml-2 font-semibold">SIMS PPOB</span>
+                    <span class="ml-2 font-semibold">{{config('app.name')}}</span>
                 </a>
                 <nav class="flex gap-6">
                     <a href="{{ route('topup') }}"
